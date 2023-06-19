@@ -1,13 +1,17 @@
 import typer
 
-from pete.retrieval_qa import get_qa_chain
+from pete.chains.obsidian import get_obsidian_chain
+import langchain
 
 app = typer.Typer()
 
 
 @app.command()
-def main() -> None:
-    chain = get_qa_chain()
+def main(
+    verbose: bool = typer.Option(False, "-v", "--verbose"),
+) -> None:
+    langchain.verbose = verbose
+    chain = get_obsidian_chain()
     query: str = typer.prompt("Ask me anything", type=str)
     typer.echo(chain(query))
 
