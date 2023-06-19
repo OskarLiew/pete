@@ -4,14 +4,12 @@ This is my personal assistant AI. It takes a directory of markdown files, which 
 
 ## Installation
 
+Install the package with poetry:
+
 ```shell
-python3.11 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+poetry install
 ```
 
 ## Running
 
-```shell
-python pete/main.py
-```
+Then you can run the personal assistant with the `pete` command.

@@ -1,5 +1,6 @@
 import typer
-from retrieval_qa import get_qa_chain
+
+from pete.retrieval_qa import get_qa_chain
 
 app = typer.Typer()
 
@@ -7,7 +8,7 @@ app = typer.Typer()
 @app.command()
 def main() -> None:
     chain = get_qa_chain()
-    query = typer.prompt("Ask")
+    query: str = typer.prompt("Ask me anything", type=str)
     typer.echo(chain(query))
 
 

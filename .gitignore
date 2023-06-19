@@ -3,3 +3,7 @@ venv
 __pycache__
 
 notes/
+.cache/
+.mypy_cache/
+.ruff_cache/
+*.ipynb

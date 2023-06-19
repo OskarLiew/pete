@@ -2,66 +2,49 @@ import logging
 from pathlib import Path
 
 from langchain.chains import RetrievalQA
+from langchain.document_loaders import ObsidianLoader
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.llms import OpenAI
-from langchain.text_splitter import MarkdownHeaderTextSplitter
+from langchain.text_splitter import MarkdownTextSplitter
 from langchain.vectorstores import Chroma
-from cache import CACHE_DIR
 
-from config import CONFIG
+from pete.cli_utils import progress_spinner
+from pete.config import CONFIG
 
 LOGGER = logging.getLogger(__name__)
 THIS_DIR = Path(__file__).parent
-PERSIST_DIR = CACHE_DIR / "chroma"
+PERSIST_DIR = CONFIG.cache_path / "chroma"
 
 
 def get_qa_chain() -> RetrievalQA:
     vectorstore = _init_vectorstore()
 
-    return RetrievalQA.from_chain_type(
-        llm=OpenAI(),
+    return RetrievalQA.from_chain_type(  # type: ignore
+        llm=OpenAI(),  # type: ignore
         chain_type="stuff",  # Puts documents in context as they are
         retriever=vectorstore.as_retriever(),
     )
 
 
 def _init_vectorstore() -> Chroma:
-    embedding = OpenAIEmbeddings()
+    embedding = OpenAIEmbeddings()  # type: ignore
+    persist_dir = str(PERSIST_DIR.resolve())
 
     # Load existing vectorstore
     if PERSIST_DIR.exists():
-        return Chroma(
-            persist_directory=str(PERSIST_DIR.resolve()), embedding_function=embedding
+        return Chroma(persist_directory=persist_dir, embedding_function=embedding)
+
+    with progress_spinner("Loading documents..."):
+        loader = ObsidianLoader(str(CONFIG.vault))
+        text_splitter = MarkdownTextSplitter(chunk_size=1000, chunk_overlap=0)
+        documents = loader.load_and_split(text_splitter)
+
+    with progress_spinner("Embedding documents..."):
+        vectorstore = Chroma.from_documents(
+            documents=documents,
+            embedding=embedding,
+            persist_directory=persist_dir,
         )
 
-    LOGGER.info("Initializing vectorstore...")
-    texts, metadata = _load_and_split_markdown(CONFIG.vault)
-
-    vectorstore = Chroma.from_texts(
-        texts,
-        metadatas=metadata,
-        embedding=embedding,
-        persist_directory=str(PERSIST_DIR.resolve()),
-    )
     vectorstore.persist()
     return vectorstore
-
-
-def _load_and_split_markdown(root_dir: Path) -> tuple[list[str], list[dict[str, str]]]:
-    text_splitter = MarkdownHeaderTextSplitter(
-        headers_to_split_on=[("#", "Header 1"), ("##", "Header 2")]
-    )
-    texts, metadata = [], []
-    for note_path in root_dir.glob("**/*.md"):
-        with open(note_path, "r", encoding="utf-8") as file:
-            text = file.read()
-
-        md_splits = text_splitter.split_text(text)
-
-        # Add source to metadata
-        for split in md_splits:
-            split["metadata"]["source"] = str(note_path.relative_to(root_dir.parent))
-
-        texts.extend([split["content"] for split in md_splits])
-        metadata.extend([split["metadata"] for split in md_splits])
-    return texts, metadata

@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "pete"
+version = "0.1.0"
+description = "A personal assistant"
+authors = ["Oskar Liew <oskar@liew.se>"]
+readme = "README.md"
+packages = [{ include = "pete" }]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "== 0.0.203"
+openai = "^0.27.8"
+python-dotenv = "^1.0.0"
+tiktoken = "^0.4.0"
+sentence_transformers = "^2.2.2"
+chromadb = "^0.3.26"
+pydantic = "^1.10.9"
+typer = "^0.9.0"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.3.0"
+black = "^23.3.0"
+isort = "^5.12.0"
+ruff = "^0.0.272"
+
+[tool.poetry.scripts]
+pete = "pete.main:app"
+
+[tool.isort]
+profile = "black"
