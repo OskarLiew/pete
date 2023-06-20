@@ -1,7 +1,7 @@
+import langchain
 import typer
 
 from pete.chains.obsidian import get_obsidian_chain
-import langchain
 
 app = typer.Typer()
 

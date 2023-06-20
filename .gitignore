@@ -2,8 +2,8 @@ venv
 .env
 __pycache__
 
-notes/
 .cache/
 .mypy_cache/
 .ruff_cache/
 *.ipynb
+.pytest_cache/
