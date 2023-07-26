@@ -14,13 +14,15 @@ In [[Parallel Computing]], the goal is to speed up a *CPU-bound task* by splitti
 
 ### Threading
 
-[[Threading]] is a concurrent execution model where multiple threads take turns executing tasks. One process can consist of multiple threads. Threading is suited for *IO-bound* tasks, where computations can be performed while waiting for input/ourput to complete.
+[[Threading]] is a concurrent execution model where multiple threads take turns executing tasks. One process can consist of multiple threads. Threading is suited for *IO-bound* tasks, where computations can be performed while waiting for input/output to complete.
 
 ### Async IO
 
 [[Async IO]] is a single-threaded, single process design that uses cooperative multitasking to give a feeling of concurrency. Coroutines (a central feature of async IO) can be scheduled concurrently, but they are not inherently concurrent.
 
 ---
+
 # References
-1. https://en.wikipedia.org/wiki/Concurrent_computing
-2. https://realpython.com/async-io-python/
+
+1. <https://en.wikipedia.org/wiki/Concurrent_computing>
+2. <https://realpython.com/async-io-python/>
