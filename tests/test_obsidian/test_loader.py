@@ -1,13 +1,13 @@
-import re
-from pete.chains.obsidian.loader import (
-    MyObsidianLoader,
-    _prune_obsidian_text,
-    MyObsidianTextSplitter,
-    _get_obsidian_document_title,
-)
+from pathlib import Path
+
 from langchain.docstore.document import Document
 
-from pathlib import Path
+from pete.chains.obsidian.loader import (
+    MyObsidianLoader,
+    MyObsidianTextSplitter,
+    _get_obsidian_document_title,
+    _prune_obsidian_text,
+)
 
 TEST_NOTES_DIR = Path(__file__).parent / "notes"
 
